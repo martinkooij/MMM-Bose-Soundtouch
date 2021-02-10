@@ -12,7 +12,7 @@
 	},
 	start: function() {
 		Log.info('Starting module: ' + this.name);
-		this.sendSocketNotification('BOSE_READ', {boselist: this.config.apiBase, interval: this.updateInterval * 1000} );
+		this.sendSocketNotification('BOSE_READ', {boselist: this.config.apiBase, interval: (this.config.updateInterval * 1000)} );
 	},
 	
 	render: function(data){

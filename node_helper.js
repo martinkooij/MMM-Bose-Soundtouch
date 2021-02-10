@@ -45,8 +45,8 @@ module.exports = NodeHelper.create({
 	var answer ;
 	for (let ip of iplist) {
 		  console.log("ip = ", ip) ;
-//		  answer = await this.readOnebose("http://"+ ip + ":8090/now_playing") ;
-		answer = { res : "empty" , body: ("DEBUG info on MUSIC:" + ip) };
+		  answer = await this.readOnebose("http://"+ ip + ":8090/now_playing") ;
+//		answer = { res : "empty" , body: ("DEBUG info on MUSIC:" + ip) };
 		  if (answer.res === "full") { break} ;
 	};
 	console.log('RETURN: ', answer) ;
@@ -64,8 +64,7 @@ module.exports = NodeHelper.create({
 				this.sendSocketNotification('BOSE_DATA', result.body);
 			}
 		})();
-		console.log('Update?', updateInterval);
-		setTimeout(function(){ self.boseFetcher();}, 50000 )
+		setTimeout(function(){ self.boseFetcher();}, updateInterval )
 	},	
   
 });
