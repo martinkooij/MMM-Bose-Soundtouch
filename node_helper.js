@@ -15,8 +15,8 @@ module.exports = NodeHelper.create({
   
   //Subclass socketNotificationReceived received.
   socketNotificationReceived: function(notification, url) {
-	(async () => {
-		if (notification === 'BOSE_READ') {
+	if (notification === 'BOSE_READ') {
+		(async () => {
 			console.log(notification, url);
 			console.log('ASK for result');
 			const result = await this.readAllboses(url);
@@ -25,8 +25,8 @@ module.exports = NodeHelper.create({
 				console.log("I now send to module: ", result.body);
 				this.sendSocketNotification('BOSE_DATA', result.body);
 			}
-		}
-	})() ;
+		})() ;
+	}
   },
   
   readOnebose: async function(endpoint) {
