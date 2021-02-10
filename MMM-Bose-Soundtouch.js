@@ -1,18 +1,25 @@
 /* Magic Mirror
  * Module: MagicMirror-Bose-Soundtouch
  *
- * By SpoturDeal https://github.com/SpoturDeal
+ * By SpoturDeal https://github.com/SpoturDeal 
+ * updated by MartinKooij 2021 (list of bose speakers)
  * MIT Licensed.
  */
+ 
  Module.register('MMM-Bose-Soundtouch', {
 	defaults: {
-        updateInterval: 5,                          // every 5 seconds
-        apiBase: '192.168.xxx.xxx',                 // the IPaddress of the Bose Soundtouch in your home network
+        updateInterval: 10,                          // every 5 seconds
+        apiBase: '192.168.xxx.xxx',                 // the IPaddress(es) of the Bose Soundtouch in your home network
         hideImage: false,
 	},
 	start: function() {
 		Log.info('Starting module: ' + this.name);
-		this.sendSocketNotification('BOSE_READ', {boselist: this.config.apiBase, interval: (this.config.updateInterval * 1000)} );
+		this.sendSocketNotification('BOSE_READ', 
+			{
+			boselist: this.config.apiBase, 
+			interval: this.config.updateInterval * 1000
+			} 
+		);
 	},
 	
 	render: function(data){
