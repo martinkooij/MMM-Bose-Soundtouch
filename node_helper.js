@@ -12,17 +12,17 @@ module.exports = NodeHelper.create({
   start: function () {
     console.log('Bose helper started ...');
   },
+  
   //Subclass socketNotificationReceived received.
   socketNotificationReceived: function(notification, url) {
     if (notification === 'BOSE_READ') {
-//      console.log(notification, url);
+        console.log(notification, url);
 		const result = readAllboses(url);
         if (result.res != "error") {
-//		  console.log(result.body);
+		  console.log(result.body);
 		  self.sendSocketNotification('BOSE_DATA', result.body);
 		}
-      });
-    }
+      }
   },
   
   readOnebose: async function(endpoint) {
