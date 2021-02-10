@@ -7,6 +7,8 @@
  */
 var NodeHelper = require('node_helper');
 var getBose = require('node-fetch');
+var updateInterval = 10000 ;
+var iplist = [] ;
 
 module.exports = NodeHelper.create({
   start: function () {
@@ -14,18 +16,11 @@ module.exports = NodeHelper.create({
   },
   
   //Subclass socketNotificationReceived received.
-  socketNotificationReceived: function(notification, url) {
+  socketNotificationReceived: function(notification, payload) {
 	if (notification === 'BOSE_READ') {
-		(async () => {
-			console.log(notification, url);
-			console.log('ASK for result');
-			const result = await this.readAllboses(url);
-			console.log('GOTTEN result', result);
-			if (result.res != "error") {
-				console.log("I now send to module: ", result.body);
-				this.sendSocketNotification('BOSE_DATA', result.body);
-			}
-		})() ;
+		updateInterval = payload.interval ;
+		iplist = payload.boselist ;
+		boseFetcher() ;
 	}
   },
   
@@ -56,6 +51,19 @@ module.exports = NodeHelper.create({
 	}
 	return answer ;
   }
-	 
+	
+	boseFetcher: function() {
+		var self = this ;
+		(async () => {
+			console.log('ASK for result:', iplist);
+			const result = await this.readAllboses(iplist);
+			console.log('GOTTEN result', result);
+			if (result.res != "error") {
+				console.log("I now send to module: ", result.body);
+				this.sendSocketNotification('BOSE_DATA', result.body);
+			}
+		})();
+		setTimeout(function(){ self.boseFetcher();}, updateInterval )
+	},	
   
 });

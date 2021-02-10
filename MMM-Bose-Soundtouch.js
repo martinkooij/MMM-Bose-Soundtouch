@@ -12,15 +12,9 @@
 	},
 	start: function() {
 		Log.info('Starting module: ' + this.name);
-		this.update();
-		// refresh every x seconden
-		setInterval(
-			this.update.bind(this),
-			this.config.updateInterval * 1000);
+		this.sendSocketNotification('BOSE_READ', {boselist: this.config.apiBase, interval: this.updateInterval * 1000} );
 	},
-	update: function(){
-		this.sendSocketNotification('BOSE_READ', this.config.apiBase);
-	},
+	
 	render: function(data){
 	    var json=xml2json(data);
         var music = json.nowPlaying;
@@ -34,7 +28,7 @@
 	//var sArt = $(data).find('art').text().trim();
 
         var sTitle='';
-	var sAlbum = '';
+		var sAlbum = '';
         var lenAlbum=30;
         var showMusic = false;
         if (music.source == "SPOTIFY"){
