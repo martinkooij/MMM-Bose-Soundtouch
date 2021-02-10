@@ -20,7 +20,7 @@ module.exports = NodeHelper.create({
 	if (notification === 'BOSE_READ') {
 		updateInterval = payload.interval ;
 		iplist = payload.boselist ;
-		boseFetcher() ;
+		this.boseFetcher() ;
 	}
   },
   
