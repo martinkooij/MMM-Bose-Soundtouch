@@ -17,7 +17,7 @@ module.exports = NodeHelper.create({
   socketNotificationReceived: function(notification, url) {
     if (notification === 'BOSE_READ') {
         console.log(notification, url);
-		const result = readAllboses(url);
+		const result = this.readAllboses(url);
         if (result.res != "error") {
 		  console.log(result.body);
 		  self.sendSocketNotification('BOSE_DATA', result.body);
@@ -47,7 +47,7 @@ module.exports = NodeHelper.create({
 	  var answer ;
 	  for (let ip in iplist) {
 		  console.log("ip = ", ip) ;
-		  answer = await readOnebose("http://"+ ip + ":8090/now_playing") ;
+		  answer = await this.readOnebose("http://"+ ip + ":8090/now_playing") ;
 		  if (answer.res === "full") { break} ;
 	  }
 	  firstanswer = answer ;
