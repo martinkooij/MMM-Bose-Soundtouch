@@ -64,7 +64,7 @@ module.exports = NodeHelper.create({
 				this.sendSocketNotification('BOSE_DATA', result.body);
 			}
 		})();
-//		setTimeout(function(){ self.boseFetcher();}, updateInterval )
+		setTimeout(function(){ self.boseFetcher();}, 50000 )
 	},	
   
 });
