@@ -50,7 +50,7 @@ module.exports = NodeHelper.create({
 		  if (answer.res === "full") { break} ;
 	}
 	return answer ;
-  }
+  },
 	
 	boseFetcher: function() {
 		var self = this ;
