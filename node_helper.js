@@ -48,7 +48,8 @@ module.exports = NodeHelper.create({
 //		  answer = await this.readOnebose("http://"+ ip + ":8090/now_playing") ;
 		answer = { res : "empty" , body: ("DEBUG info on MUSIC:" + ip) };
 		  if (answer.res === "full") { break} ;
-	}
+	};
+	console.log('RETURN: ', answer) ;
 	return answer ;
   },
 	
