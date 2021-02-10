@@ -15,14 +15,16 @@ module.exports = NodeHelper.create({
   
   //Subclass socketNotificationReceived received.
   socketNotificationReceived: function(notification, url) {
-    if (notification === 'BOSE_READ') {
-        console.log(notification, url);
-		const result = this.readAllboses(url);
-        if (result.res != "error") {
-		  console.log(result.body);
-		  self.sendSocketNotification('BOSE_DATA', result.body);
+	(async () => {
+		if (notification === 'BOSE_READ') {
+			console.log(notification, url);
+			const result = await this.readAllboses(url);
+			if (result.res != "error") {
+				console.log(result.body);
+				self.sendSocketNotification('BOSE_DATA', result.body);
+			}
 		}
-      }
+	})() ;
   },
   
   readOnebose: async function(endpoint) {
@@ -40,19 +42,16 @@ module.exports = NodeHelper.create({
 	}
   },
 	  
-  readAllboses: function (iplist) {
-  if (!Array.isArray(iplist)) { iplist = [iplist] } ;
-  var firstanswer ;
-  (async () => {
-	  var answer ;
-	  for (let ip in iplist) {
+  readAllboses: async function (iplist) {
+	if (!Array.isArray(iplist)) { iplist = [iplist] } ;
+	console.log("DEBUG in reaALLBoses", iplist) ;
+	var answer ;
+	for (let ip in iplist) {
 		  console.log("ip = ", ip) ;
 		  answer = await this.readOnebose("http://"+ ip + ":8090/now_playing") ;
 		  if (answer.res === "full") { break} ;
-	  }
-	  firstanswer = answer ;
-  })() ;
-  return firstanswer ;
+	}
+	return answer ;
   }
 	 
   
