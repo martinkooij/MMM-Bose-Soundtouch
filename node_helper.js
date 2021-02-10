@@ -28,14 +28,14 @@ module.exports = NodeHelper.create({
 	const regexp = /source="INVALID_SOURCE"|source="STANDBY"/ ;
 	try {
 		const res = await getBose(endpoint) ;
-		const data = await res.text;
+		const data = await res.text();
 		console.log(endpoint, "=" , data) ;
 		if (data.search(regexp) != -1) {
 			return {res: "empty" , body: data} ;
 		}
 		return {res: "full" , body: data} ;
 	} catch (err) {
-		return {res: "error" , body: err};
+		return {res: "error" , body: JSON.stringify(err)};
 	}
   },
 	  
