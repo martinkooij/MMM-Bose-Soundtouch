@@ -41,7 +41,7 @@ module.exports = NodeHelper.create({
   },
 	  
   readAllboses: function (iplist) {
-  if (!Array.isArry(iplist)) { iplist = [iplist] } ;
+  if (!Array.isArray(iplist)) { iplist = [iplist] } ;
   var firstanswer ;
   (async () => {
 	  var answer ;
