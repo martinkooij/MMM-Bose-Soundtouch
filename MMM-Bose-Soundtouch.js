@@ -94,7 +94,7 @@
 		this.loaded = true;
 		// only update dom if content changed
 		if(this.dom !== text){
-			console.log("MMM Bose: send sART");
+//			console.log("MMM Bose: send sART");
 			this.sendSocketNotification('CHECK_BOSEART', sArt);
 			this.dom = text;
 			this.updateDom(this.config.animationSpeed);
@@ -111,15 +111,18 @@
 			'//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.js'
 		];
 	},
+	
 	getStyles: function() {
 		return ['bose.css'];
 	},
+	
     maxSize: function(sTr,len){
        if(sTr.length > len) {
           sTr = sTr.substring(0,len-1)+"...";
        }
        return sTr;
     },
+	
 	getDom: function() {
 		var content = '';
 		if (!this.loaded) {
@@ -131,13 +134,14 @@
 		}
 		return $('<div class="bose">'+content+'</div>')[0];
 	},
+	
     socketNotificationReceived: function(notification, payload) {
       if (notification === 'BOSE_DATA') {
-          console.log('received BOSE_DATA');
+//          console.log('received BOSE_DATA');
 		  this.render(payload);
       } else if (notification === 'COLOR_BOSE_DATA') {
-		  console.log('received colors',payload) ;
-		  if (payload == []) {
+//		  console.log('received color data',payload) ;
+		  if (payload.length == 0) {
 			this.sendNotification('SET_LCD_BACKLIGHTS', {command: -1} );
 		  } else {
 			var myObject = 
@@ -149,7 +153,7 @@
 				 {r: payload.dominant.r, g: payload.dominant.g, b: payload.dominant.b},
 				 {r: payload.dominant.r, g: payload.dominant.g, b: payload.dominant.b},
 			    ]}}
-			console.log("THIS IS SENT AROUND:", myObject);
+//			console.log("THIS IS SENT AROUND:", myObject);
 			this.sendNotification('SET_LCD_BACKLIGHTS', myObject);  
 	  }
 	  }

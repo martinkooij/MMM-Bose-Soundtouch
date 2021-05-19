@@ -37,10 +37,12 @@ module.exports = NodeHelper.create({
 	  
   readAllboses: async function (iplist) {
 	if (!Array.isArray(iplist)) { iplist = [iplist] } ;
-	var answer ;
-	for (let ip of iplist) {
-		  answer = await this.readOnebose("http://"+ ip + ":8090/now_playing") ;
-		  if (answer.res === "on") { break} ;
+	var answer = {res: "error", body: "This is an error"} ;
+	for (var i = 0 ; i < iplist.length ; i++) {
+		  var local_answer = await this.readOnebose("http://"+ iplist[i] + ":8090/now_playing") ;
+		  if (local_answer.res === "on") { answer = local_answer; break} ;
+		  if (local_answer.res === "off") {answer = local_answer;}
+		  // when error try next
 	};
 	return answer ;
   },
@@ -51,16 +53,18 @@ module.exports = NodeHelper.create({
 		const result = await this.readAllboses(iplist);
 		if (result.res != "error") {
 			this.sendSocketNotification('BOSE_DATA', result.body);
+		} else {
+			console.log("MMM Bose error in fetcher", JSON.stringify(result));
 		}
 	})();
 	setTimeout(function(){ self.boseFetcher();}, updateInterval )
   },	
   
-  checkBoseart: /* async */ function(sART) {
+  checkBoseart: function(sART) {
 	  
-	  console.log("DEBUG MMM_BOSE: start checkBoseart");
+//	  console.log("DEBUG MMM_BOSE: start checkBoseart", sART, currentART);
 	  if (currentART === sART) { return ; } //do nothing
-	  console.log("DEBUG MMM_BOSE: start checkBoseart, user = ", this.config.sightengineUser);
+//	  console.log("DEBUG MMM_BOSE: start checkBoseart, user = ", this.config.sightengineUser);
 	  if (this.config.sightengineUser === 'MYUSER') { return ; } // do nothing
 	  currentART = sART ;
 	  if (sART) {
@@ -75,19 +79,19 @@ module.exports = NodeHelper.create({
 			var self = this ;
 			var util = require('util');
 			var exec = require('child_process').exec;
-			var curl = require('curlrequest') ;
 			var command = 'curl "'+ 
 				'https://api.sightengine.com/1.0/properties.json?' +
 				'api_user={' + this.config.sightengineUser + '}&' + 
 				'api_secret={' + this.config.sightengineSecret + '}&' +
 				'url=' + sART + '"' ;
-			console.log("DEBUG ENDPOINT = ", command);
+//			console.log("DEBUG ENDPOINT = ", command);
 			child = exec(command, function(error, stdout, stderr){
-				console.log("DEBUG MMMBOSE R=> ", stdout) ;
-				console.log("DEBUG MMMBOSE E=> ", error) ;
-				console.log("DEBUG MMMBOSE STDERR=> ",stderr) ;
+				try {
+//				console.log("DEBUG MMMBOSE R=> ", stdout) ;
+//				console.log("DEBUG MMMBOSE E=> ", error) ;
+//				console.log("DEBUG MMMBOSE STDERR=> ",stderr) ;
 				const pictureProperties = JSON.parse(stdout) ;
-				console.log("DEBUG MMM BOSE, JSON picture = ", JSON.stringify(pictureProperties));
+//				console.log("DEBUG MMM BOSE, JSON picture = ", JSON.stringify(pictureProperties));
 				artListCache.push(
 					{
 					 art:sART, 
@@ -107,6 +111,10 @@ module.exports = NodeHelper.create({
 					});
 				if (artListCache.length > 50 ) { artListCache.shift() ; }
 				self.sendBoseart(artListCache.length - 1);
+				} catch(error) {
+				  console.log("MMM-Bose curl error:", JSON.stringify(error).substring(0,40)) ;
+				  self.sendBoseart(-1) ;
+				};				  
 			});				
 		} else {
 			this.sendBoseart(found) ;
@@ -124,24 +132,14 @@ module.exports = NodeHelper.create({
 	 }
   },
   
-	encodeQueryData : function(data) {
-		var ret = [];
-		for (var d in data)
-			ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
-		return ret.join('&');
-	},
-
-	
   socketNotificationReceived: function(notification, payload) {
 	if (notification === 'BOSE_READ') {
 		updateInterval = payload.interval ;
 		iplist = payload.boselist ;
 		this.boseFetcher() ;
 	} else if (notification === 'CHECK_BOSEART') {
-		console.log("CHECK_BOSEART Received in node_helper"); 
-/*		(async () => {
-		await */ this.checkBoseart(payload);
-/*		})(); */
+//		console.log("CHECK_BOSEART Received in node_helper"); 
+		this.checkBoseart(payload);
 	} else if (notification === 'CONFIG') {
 		this.config = payload ;
 	} 
