@@ -142,7 +142,7 @@
       } else if (notification === 'COLOR_BOSE_DATA') {
 //		  console.log('received color data',payload) ;
 		  if (payload.length == 0) {
-			this.sendNotification('SET_LCD_BACKLIGHTS', {command: -1} );
+			this.sendNotification('SET_LCD_BACKLIGHT', {command: -1} );
 		  } else {
 			var myObject = 
 			 {command: "ART", 
