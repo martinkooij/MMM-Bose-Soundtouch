@@ -77,7 +77,6 @@ module.exports = NodeHelper.create({
 		}
 		if (found == -1) {
 			var self = this ;
-			var util = require('util');
 			var exec = require('child_process').exec;
 			var command = 'curl "'+ 
 				'https://api.sightengine.com/1.0/properties.json?' +
